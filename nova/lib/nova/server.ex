@@ -16,6 +16,10 @@ defmodule Nova.Server do
     GenServer.start_link(__MODULE__, arg.initial_value, name: arg.name)
   end
 
+  def mata(pid) do
+    GenServer.cast(pid, :boom)
+  end
+
   def increment(pid) do
     GenServer.cast(pid, :inc)
   end
@@ -49,5 +53,10 @@ defmodule Nova.Server do
   @impl true
   def handle_cast(:dec, state) do
     {:noreply, Counter.dec(state)}
+  end
+
+  @impl true
+  def handle_cast(:boom, _state) do
+    raise "boom!"
   end
 end
