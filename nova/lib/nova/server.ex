@@ -4,9 +4,16 @@ defmodule Nova.Server do
 
   # Client
 
-  def start_link(initial_value) do
+  def child_spec(%{name: name} = arg) do
+    %{
+      id: name,
+      start: {__MODULE__, :start_link, [arg]}
+    }
+  end
+
+  def start_link(arg) do
     IO.puts("starting server")
-    GenServer.start_link(__MODULE__, initial_value , name: :counter)
+    GenServer.start_link(__MODULE__, arg.initial_value, name: arg.name)
   end
 
   def increment(pid) do
