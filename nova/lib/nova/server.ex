@@ -5,7 +5,8 @@ defmodule Nova.Server do
   # Client
 
   def start_link(initial_value) do
-    GenServer.start_link(__MODULE__, initial_value)
+    IO.puts("starting server")
+    GenServer.start_link(__MODULE__, initial_value , name: :counter)
   end
 
   def increment(pid) do
@@ -24,6 +25,7 @@ defmodule Nova.Server do
 
   @impl true
   def init(initial_value) do
+    IO.puts("received init callback")
     {:ok, Counter.new(initial_value)}
   end
 

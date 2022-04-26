@@ -7,6 +7,7 @@ defmodule Nova.Application do
 
   @impl true
   def start(_type, _args) do
+    IO.puts("starting application")
     children = [
       # Starts a worker by calling: Nova.Worker.start_link(arg)
       {Nova.Server, "0"}
