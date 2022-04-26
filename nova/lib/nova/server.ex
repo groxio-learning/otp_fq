@@ -4,37 +4,32 @@ defmodule Nova.Server do
 
   # Client
 
-  def child_spec(arg) do
-    %{
-      id: arg.name,
-      start: {__MODULE__, :start_link, [arg]}
-    }
+  def start_link(initial_value) do
+    IO.puts("starting server")
+    GenServer.start_link(__MODULE__, initial_value , name: :counter)
   end
 
-  def start_link(arg) do
-    GenServer.start_link(__MODULE__, arg.initial_value, name: arg.name)
+  def increment(pid) do
+    GenServer.cast(pid, :inc)
   end
 
-  def increment(counter_name) do
-    GenServer.cast(counter_name, :inc)
+  def decrement(pid) do
+    GenServer.cast(pid, :dec)
   end
 
-  def decrement(counter_name) do
-    GenServer.cast(counter_name, :dec)
-  end
-
-  def read_state(counter_name) do
-    GenServer.call(counter_name, :read)
+  def read_state(pid) do
+    GenServer.call(pid, :read)
   end
 
   # Server (callbacks)
 
   @impl true
   def init(initial_value) do
+    IO.puts("received init callback")
     {:ok, Counter.new(initial_value)}
   end
 
-  @impl GenServer
+  @impl true
   def handle_call(:read, _from, state) do
     {:reply, Counter.message(state), state}
   end
