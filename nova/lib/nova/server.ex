@@ -1,5 +1,5 @@
 defmodule Nova.Server do
-  use GenServer
+  use GenServer, restart: :temporary
   alias Nova.Counter
 
   # Client
@@ -28,6 +28,14 @@ defmodule Nova.Server do
     GenServer.call(pid, :read)
   end
 
+  def stop(pid) do
+    Supervisor.terminate_child(:sup, pid)
+  end
+
+  def increment_periodically(pid) do
+    GenServer.cast(pid, :start_up)
+  end
+
   # Server (callbacks)
 
   @impl true
@@ -49,5 +57,17 @@ defmodule Nova.Server do
   @impl true
   def handle_cast(:dec, state) do
     {:noreply, Counter.dec(state)}
+  end
+
+  @impl true
+  def handle_cast(:start_up, state) do
+    Process.send_after(self(), :periodically, 2000)
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:periodically, state) do
+    Process.send_after(self(), :periodically, 2000)
+    {:noreply, Counter.inc(state)}
   end
 end
