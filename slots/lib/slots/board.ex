@@ -4,6 +4,12 @@ defmodule Slots.Board do
   # Enum.map(board.guesses, &render_row(answer, &1))
   defstruct solution: [1, 2, 3, 4], guesses: []
   def new, do: __struct__()
+  def random_new() do
+    solution = 1..8
+    |> Enum.shuffle
+    |> Enum.take(4)
+    %__MODULE__{solution: solution}
+  end
   def add_guess(%{guesses: guesses}=board , guess) do
     %{ board | guesses: [guess | guesses]}
   end
@@ -21,28 +27,13 @@ defmodule Slots.Board do
     |> Enum.join("\n")
   end
   def render_status(board) do
-    # cond do
-    #  won?(board) -> :won
-    #   lost?(board) -> :lost
-    #   true -> :playing
-    # end
-
-
     cond do
       won?(board) -> :won
       lost?(board) -> :lost
       true -> :playing
     end
   end
-
   def won?(%{solution: s, guesses: [s|_]}), do: true
   def won?(%{solution: _, guesses: _}), do: false
-  def lost?(board) do
-    guesses_length =
-			board.guesses
-			|> length
-
-    lost = guesses_length > 4
-  end
-
+  def lost?(board), do: length(board.guesses) > 9
 end
