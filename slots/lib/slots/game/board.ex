@@ -1,5 +1,5 @@
-defmodule Slots.Board do
-  alias Slots.Score
+defmodule Slots.Game.Board do
+  alias Slots.Game.Score
   defstruct solution: [1, 2, 3, 4], guesses: []
 
   def new, do: __struct__()

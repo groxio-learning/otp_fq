@@ -1,6 +1,6 @@
 defmodule Slots.Game do
   use GenServer
-  alias Slots.Board
+  alias Slots.Game.Board
 
   # Client
 
